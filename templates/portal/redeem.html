@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Redeem a gift{% endblock %}
+{% block content %}
+<h1>Redeem a gift</h1>
+{% include "portal/_nav.html" %}
+<form method="get" class="search">
+  <input type="text" name="code" value="{{ code }}" placeholder="Gift code, e.g. ABCDE-FGHJK" required>
+  <button>Look up</button>
+</form>
+{% if gift %}
+<div class="card">
+  <p><strong>{{ gift.product_name }}</strong> · {{ gift.location.name }}</p>
+  <p>For {% if gift.recipient %}{{ gift.recipient.display_name }}{% else %}{{ gift.recipient_email }}{% endif %} · from {{ gift.cheer.sender.display_name }}</p>
+  <p>Gift value {{ gift.value_cents|cents }} · you receive {{ gift.vendor_net_cents|cents }}</p>
+  {% if gift.is_open %}
+    {% if gift.minimum_age %}<p class="flash error"><strong>Check ID.</strong> This item is restricted to ages {{ gift.minimum_age }}+.</p>{% endif %}
+    <form method="post">{% csrf_token %}
+      <input type="hidden" name="code" value="{{ gift.code }}">
+      <button name="confirm" value="1">Confirm and redeem</button>
+    </form>
+  {% else %}
+    <p class="flash error">This gift cannot be redeemed: {{ gift.get_status_display }}.</p>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

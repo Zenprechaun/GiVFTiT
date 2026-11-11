@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Send a cheer{% endblock %}
+{% block content %}
+<h1>Send a cheer to a friend</h1>
+<form class="search" method="get">
+  <input type="text" name="q" value="{{ query }}" placeholder="Search businesses or items">
+  <select name="category">
+    <option value="">All categories</option>
+    {% for c in categories %}<option value="{{ c.slug }}"{% if c.slug == category %} selected{% endif %}>{{ c.name }}</option>{% endfor %}
+  </select>
+  <button>Search</button>
+</form>
+<div class="grid">
+  {% for vendor in vendors %}
+  <a class="card" href="{% url 'vendors:detail' vendor.slug %}" style="text-decoration:none;color:inherit">
+    <strong>{{ vendor.name }}</strong><br>
+    <span class="tag">{{ vendor.category.name }}</span>
+    {% if vendor.category.minimum_age %}<span class="tag age">{{ vendor.category.minimum_age }}+</span>{% endif %}
+    <p class="muted small">{{ vendor.description|truncatechars:110 }}</p>
+    <span class="small">{{ vendor.product_count }} item{{ vendor.product_count|pluralize }}</span>
+  </a>
+  {% empty %}
+  <p class="muted">No businesses found yet. <a href="{% url 'portal:join' %}">List your business</a>.</p>
+  {% endfor %}
+</div>
+{% endblock %}

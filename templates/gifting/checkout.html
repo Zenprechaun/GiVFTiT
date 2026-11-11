@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Send cheer{% endblock %}
+{% block content %}
+<h1>Who is this for?</h1>
+{% include "gifting/_cart_table.html" %}
+<form method="post">{% csrf_token %}
+  {{ form.non_field_errors }}
+  {% if form.friends.field.queryset.exists %}<p>{{ form.friends.label_tag }}{{ form.friends }}{{ form.friends.errors }}</p>
+  {% else %}<p class="muted">You have no friends added yet. <a href="{% url 'social:friends' %}">Add friends</a> or send by email below.</p>{% endif %}
+  {% if form.groups.field.queryset.exists %}<p>{{ form.groups.label_tag }}{{ form.groups }}</p>{% endif %}
+  <p>{{ form.emails.label_tag }}{{ form.emails }}<span class="helptext">{{ form.emails.help_text }}</span>{{ form.emails.errors }}</p>
+  <p>{{ form.message.label_tag }}{{ form.message }}</p>
+  <p>{{ form.method.label_tag }}{{ form.method }}{{ form.method.errors }}
+     <span class="helptext">Wallet balance: {{ balance|cents }}</span></p>
+  <button>Send cheer</button>
+</form>
+{% endblock %}

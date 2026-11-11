@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}{{ vendor.name }}{% endblock %}
+{% block content %}
+<h1>{{ vendor.name }}</h1>
+{% include "portal/_nav.html" %}
+<div class="grid">
+  <div class="card"><div class="muted small">Owed to you</div><div class="big">{{ balance|cents }}</div></div>
+  <div class="card"><div class="muted small">Gifts not yet redeemed</div><div class="big">{{ outstanding }}</div></div>
+  <div class="card"><div class="muted small">Fee level</div><div>{{ vendor.get_fee_level_display }}</div></div>
+</div>
+<h2>Ledger</h2>
+{% include "wallet/_postings.html" %}
+<h2>Recently redeemed</h2>
+<table>
+  <tr><th>Date</th><th>Item</th><th>Location</th><th class="num">You receive</th></tr>
+  {% for gift in redeemed %}
+  <tr><td>{{ gift.resolved_at|date:"M j, Y" }}</td><td>{{ gift.product_name }}</td><td>{{ gift.location.name }}</td><td class="num">{{ gift.vendor_net_cents|cents }}</td></tr>
+  {% empty %}<tr><td colspan="4" class="muted">Nothing redeemed yet.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

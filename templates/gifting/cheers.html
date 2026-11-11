@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Cheers{% endblock %}
+{% block content %}
+<h1>Your cheers</h1>
+
+<h2>Waiting for you</h2>
+{% for gift in open_gifts %}
+<div class="card">
+  <div class="row">
+    <div>
+      <a href="{% url 'gifting:gift' gift.pk %}"><strong>{{ gift.product_name }}</strong></a> · {{ gift.value_cents|cents }}
+      {% if gift.minimum_age %}<span class="tag age">{{ gift.minimum_age }}+</span>{% endif %}
+      <div class="muted small">From {{ gift.cheer.sender.display_name }} · {{ gift.vendor.name }}, {{ gift.location.name }} · {{ gift.get_status_display }} · expires {{ gift.expires_at|date:"M j, Y" }}</div>
+      {% if gift.cheer.message %}<div class="small">“{{ gift.cheer.message }}”</div>{% endif %}
+    </div>
+    <div class="actions">
+      {% if gift.status == "pending" %}
+      <form method="post" action="{% url 'gifting:gift_action' gift.pk 'accept' %}">{% csrf_token %}<button>Accept</button></form>
+      {% else %}
+      <a class="button" href="{% url 'gifting:gift' gift.pk %}">Show code</a>
+      {% endif %}
+      {% if gift.status == "pending" %}
+      <form method="post" action="{% url 'gifting:gift_action' gift.pk 'deny' %}">{% csrf_token %}<button class="secondary">Decline</button></form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% empty %}<p class="muted">Nothing waiting.</p>
+{% endfor %}
+
+<h2>Sent</h2>
+{% for cheer in sent %}
+<div class="card">
+  <div class="row"><strong>{{ cheer.paid_at|date:"M j, Y" }}</strong><span>{{ cheer.total_cents|cents }} · {{ cheer.get_payment_method_display }}</span></div>
+  {% for gift in cheer.gifts.all %}
+  <div class="small">{{ gift.product_name }} ({{ gift.vendor.name }}) → {% if gift.recipient %}{{ gift.recipient.display_name }}{% else %}{{ gift.recipient_email }}{% endif %} · <span class="muted">{{ gift.get_status_display }}</span></div>
+  {% endfor %}
+</div>
+{% empty %}<p class="muted">You haven't sent a cheer yet.</p>
+{% endfor %}
+
+{% if past_gifts %}
+<h2>Past gifts</h2>
+<table>
+  <tr><th>Item</th><th>From</th><th>Outcome</th><th class="num">Value</th></tr>
+  {% for gift in past_gifts %}
+  <tr><td>{{ gift.product_name }}</td><td>{{ gift.cheer.sender.display_name }}</td><td>{{ gift.get_status_display }}</td><td class="num">{{ gift.value_cents|cents }}</td></tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

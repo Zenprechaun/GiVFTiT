@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Payment{% endblock %}
+{% block content %}
+{% if payment.status == "paid" %}
+  <h1>Payment received</h1>
+  <p>{{ payment.amount_cents|cents }} · {{ payment.get_purpose_display }}</p>
+  {% if payment.purpose == "cheer" %}<p>Your cheer is on its way. <a href="{% url 'gifting:cheers' %}">See your cheers</a></p>
+  {% else %}<p><a href="{% url 'wallet:wallet' %}">Back to your wallet</a></p>{% endif %}
+{% else %}
+  <h1>Payment not completed yet</h1>
+  <p class="muted">If you just paid, this page updates within a few seconds — refresh it. If you cancelled, nothing was charged{% if payment.purpose == "cheer" %} and your cart is unchanged{% endif %}.</p>
+  <p><a href="{% url 'gifting:cart' %}">Back to cart</a> · <a href="{% url 'wallet:wallet' %}">Wallet</a></p>
+{% endif %}
+{% endblock %}

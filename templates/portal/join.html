@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}List your business{% endblock %}
+{% block content %}
+<h1>List your business</h1>
+<p class="muted">Set up your page, add what people can gift, and redeem gifts when customers come in.</p>
+<form method="post">{% csrf_token %}
+  {{ form.as_p }}
+  <button>Create business page</button>
+</form>
+{% endblock %}

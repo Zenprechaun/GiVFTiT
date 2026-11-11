@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}{{ gift.product_name }}{% endblock %}
+{% block content %}
+<h1>{{ gift.product_name }}</h1>
+<div class="card">
+  <p>{{ gift.vendor.name }} · {{ gift.location.name }}{% if gift.location.address %}, {{ gift.location.address }}, {{ gift.location.city }}{% endif %}</p>
+  <p>Value {{ gift.value_cents|cents }} · From {{ gift.cheer.sender.display_name }} · {{ gift.get_status_display }}</p>
+  {% if gift.cheer.message %}<p>“{{ gift.cheer.message }}”</p>{% endif %}
+  {% if is_recipient and gift.status == "accepted" %}
+    <p class="muted small">Show this code to the staff to redeem:</p>
+    <p class="code">{{ gift.display_code }}</p>
+    {% if gift.minimum_age %}<p class="small">Bring ID: this gift is restricted to ages {{ gift.minimum_age }}+.</p>{% endif %}
+    <p class="muted small">Expires {{ gift.expires_at|date:"M j, Y" }}.</p>
+  {% elif is_recipient and gift.status == "pending" %}
+    <p class="muted">Accept this gift from your <a href="{% url 'gifting:cheers' %}">cheers page</a> to get its redemption code.</p>
+  {% endif %}
+</div>
+<p><a href="{% url 'gifting:cheers' %}">← Back to cheers</a></p>
+{% endblock %}

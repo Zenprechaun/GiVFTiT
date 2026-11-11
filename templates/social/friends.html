@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Friends{% endblock %}
+{% block content %}
+<h1>Friends</h1>
+<form method="post" class="search">{% csrf_token %}
+  <input type="text" name="identifier" placeholder="Username or email" required>
+  <button>Add or invite</button>
+</form>
+
+{% if incoming %}
+<h2>Requests for you</h2>
+{% for f in incoming %}
+<div class="card row"><span>{{ f.from_user.display_name }}</span>
+  <span class="actions">
+    <form method="post" action="{% url 'social:respond' f.pk 'accept' %}">{% csrf_token %}<button>Accept</button></form>
+    <form method="post" action="{% url 'social:respond' f.pk 'decline' %}">{% csrf_token %}<button class="secondary">Decline</button></form>
+  </span>
+</div>
+{% endfor %}
+{% endif %}
+
+<h2>Your friends</h2>
+{% for friend in friends %}<div class="card">{{ friend.display_name }} <span class="muted small">@{{ friend.username }}</span></div>
+{% empty %}<p class="muted">No friends yet.</p>{% endfor %}
+
+{% if outgoing or invitations %}
+<h2>Waiting on</h2>
+{% for f in outgoing %}<div class="card muted">{{ f.to_user.display_name }} (request sent)</div>{% endfor %}
+{% for i in invitations %}<div class="card muted">{{ i.email }} (invited)</div>{% endfor %}
+{% endif %}
+
+<h2>Buddy groups</h2>
+{% for group in groups %}<div class="card row"><a href="{% url 'social:group' group.pk %}">{{ group.name }}</a><span class="muted small">{{ group.members.count }} member{{ group.members.count|pluralize }}</span></div>{% endfor %}
+<form method="post" action="{% url 'social:group_create' %}" class="search">{% csrf_token %}
+  <input type="text" name="name" placeholder="New group name" required>
+  <button class="secondary">Create group</button>
+</form>
+{% endblock %}

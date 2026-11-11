@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Locations{% endblock %}
+{% block content %}
+<h1>Locations</h1>
+{% include "portal/_nav.html" %}
+<p><a class="button" href="{% url 'portal:location_new' %}">Add location</a></p>
+<table>
+  <tr><th>Name</th><th>Address</th><th class="num">Tax %</th><th>Status</th><th></th></tr>
+  {% for l in locations %}
+  <tr><td>{{ l.name }}</td><td>{{ l.address }} {{ l.city }} {{ l.state }}</td><td class="num">{{ l.tax_rate }}</td><td>{{ l.is_active|yesno:"Active,Hidden" }}</td><td><a href="{% url 'portal:location_edit' l.pk %}">Edit</a></td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

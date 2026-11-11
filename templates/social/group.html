@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ group.name }}{% endblock %}
+{% block content %}
+<h1>{{ group.name }}</h1>
+<form method="post">{% csrf_token %}
+  {% for friend in friends %}
+  <p><label style="font-weight:400"><input type="checkbox" name="members" value="{{ friend.pk }}"{% if friend.pk in member_ids %} checked{% endif %}> {{ friend.display_name }}</label></p>
+  {% empty %}<p class="muted">Add friends first, then put them in groups.</p>
+  {% endfor %}
+  <button>Save members</button>
+  <button class="secondary" name="delete" value="1">Delete group</button>
+</form>
+<p><a href="{% url 'social:friends' %}">← Back to friends</a></p>
+{% endblock %}

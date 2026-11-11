@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}{{ vendor.name }}{% endblock %}
+{% block content %}
+<h1>{{ vendor.name }}</h1>
+<p><span class="tag">{{ vendor.category.name }}</span> {% if vendor.category.minimum_age %}<span class="tag age">{{ vendor.category.minimum_age }}+ only</span>{% endif %}</p>
+<p>{{ vendor.description|linebreaksbr }}</p>
+{% for product in products %}
+<div class="card">
+  <div class="row">
+    <div>
+      <strong>{{ product.name }}</strong> · {{ product.price_cents|cents }}
+      <span class="tag">{{ product.get_fulfilment_display }}</span>
+      {% if product.minimum_age %}<span class="tag age">{{ product.minimum_age }}+</span>{% endif %}
+      <div class="muted small">{{ product.description }}</div>
+    </div>
+    {% if locations %}
+    <form method="post" action="{% url 'gifting:cart_add' %}" class="actions">{% csrf_token %}
+      <input type="hidden" name="product" value="{{ product.pk }}">
+      {% if locations|length == 1 %}<input type="hidden" name="location" value="{{ locations.0.pk }}">
+      {% else %}<select name="location" aria-label="Location" style="width:auto">{% for l in locations %}<option value="{{ l.pk }}">{{ l.name }}</option>{% endfor %}</select>{% endif %}
+      <input type="number" name="quantity" value="1" min="1" max="20" aria-label="Quantity" style="width:4.5rem">
+      <button>Add to cart</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% empty %}<p class="muted">Nothing listed yet.</p>
+{% endfor %}
+{% endblock %}

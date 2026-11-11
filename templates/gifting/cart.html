@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+<h1>Your cart</h1>
+{% if items %}
+{% include "gifting/_cart_table.html" with removable=True %}
+<p class="muted small">Totals are per person. Sending to three friends costs three times this.</p>
+<p><a class="button" href="{% url 'gifting:checkout' %}">Choose who gets it</a> <a class="button secondary" href="{% url 'home' %}">Keep browsing</a></p>
+{% else %}
+<p class="muted">Your cart is empty. <a href="{% url 'home' %}">Find something to send</a>.</p>
+{% endif %}
+{% endblock %}

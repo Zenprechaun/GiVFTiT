@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<h1>Products</h1>
+{% include "portal/_nav.html" %}
+<p><a class="button" href="{% url 'portal:product_new' %}">Add product</a></p>
+<table>
+  <tr><th>Name</th><th>Source</th><th>Status</th><th class="num">Price</th><th></th></tr>
+  {% for p in products %}
+  <tr><td>{{ p.name }}</td><td>{{ p.source }}</td><td>{{ p.is_active|yesno:"Active,Hidden" }}</td><td class="num">{{ p.price_cents|cents }}</td><td><a href="{% url 'portal:product_edit' p.pk %}">Edit</a></td></tr>
+  {% empty %}<tr><td colspan="5" class="muted">No products yet.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

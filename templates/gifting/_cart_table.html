@@ -1,0 +1,16 @@
+{% load money %}
+<table>
+  <tr><th>Item</th><th class="num">Qty</th><th class="num">Price</th><th class="num">Tax</th><th class="num">Fees</th><th class="num">Total</th>{% if removable %}<th></th>{% endif %}</tr>
+  {% for item in items %}
+  <tr>
+    <td>{{ item.product.name }}<div class="muted small">{{ item.product.vendor.name }} · {{ item.location.name }}</div></td>
+    <td class="num">{{ item.quantity }}</td>
+    <td class="num">{{ item.unit.price|cents }}</td>
+    <td class="num">{{ item.unit.tax|cents }}</td>
+    <td class="num">{{ item.unit.user_fees|cents }}</td>
+    <td class="num">{{ item.line_total|cents }}</td>
+    {% if removable %}<td><form method="post" action="{% url 'gifting:cart_remove' item.pk %}">{% csrf_token %}<button class="secondary">Remove</button></form></td>{% endif %}
+  </tr>
+  {% endfor %}
+  <tr><td colspan="5"><strong>Per person</strong></td><td class="num"><strong>{{ total|cents }}</strong></td>{% if removable %}<td></td>{% endif %}</tr>
+</table>

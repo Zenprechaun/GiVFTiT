@@ -1,0 +1,8 @@
+{% load money %}
+<table>
+  <tr><th>Date</th><th>Description</th><th class="num">Amount</th></tr>
+  {% for p in postings %}
+  <tr><td>{{ p.entry.created_at|date:"M j, Y" }}</td><td>{{ p.entry.description }}</td><td class="num">{{ p.change|cents }}</td></tr>
+  {% empty %}<tr><td colspan="3" class="muted">No activity yet.</td></tr>
+  {% endfor %}
+</table>

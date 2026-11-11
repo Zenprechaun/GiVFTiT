@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Test payment{% endblock %}
+{% block content %}
+<h1>Test payment</h1>
+<div class="card">
+  <p><strong>Development mode.</strong> No card is charged. In production this step is Stripe's hosted checkout page.</p>
+  <p>{{ payment.get_purpose_display }} · <strong>{{ payment.amount_cents|cents }}</strong></p>
+  <form method="post" class="actions">{% csrf_token %}
+    <button name="pay" value="1">Simulate successful payment</button>
+    <button class="secondary" name="cancel" value="1">Cancel</button>
+  </form>
+</div>
+{% endblock %}
