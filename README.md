@@ -37,6 +37,21 @@ card payments are simulated and nothing is charged. Emails print to the terminal
 
 Run the tests with `python manage.py test`.
 
+### Or run it with Docker
+
+```bash
+docker compose up --build
+```
+
+Open http://localhost:8000. This starts the site and a PostgreSQL database, with
+simulated payments. Create your admin login in a second terminal:
+
+```bash
+docker compose exec web python manage.py createsuperuser
+```
+
+Stop with Ctrl+C. Your data is kept between runs; `docker compose down -v` erases it.
+
 ## How money works
 
 All amounts are integer cents. Every movement of money is a balanced journal entry,
